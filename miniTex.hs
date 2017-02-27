@@ -9,7 +9,7 @@ import System.Environment(getArgs)
 -- vous devez changer la valeur de retour pour le resultat
 -- de votre programme.
 miniTex :: String -> String
-miniTex ss = ss
+miniTex (x:xs) = (x:xs)
 
 main = do arguments <- getArgs
           contenuFichier <- readFile (head arguments)
