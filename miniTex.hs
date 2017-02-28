@@ -9,8 +9,27 @@ import System.Environment(getArgs)
 -- vous devez changer la valeur de retour pour le resultat
 -- de votre programme.
 miniTex :: String -> String
-miniTex (x:xs) = (x:xs)
+miniTex [] = []
+miniTex (x:xs) = sections (x:xs)
 
-main = do arguments <- getArgs
-          contenuFichier <- readFile (head arguments)
-          putStr (miniTex contenuFichier)
+--BOUCLE INFINI +++++++++
+sections :: String -> String
+sections [] = []
+sections (x:xs) | x == '\\' = sections xs
+                | otherwise = sections (x:xs)
+
+--tables :: String -> String
+--tables [] = []
+--tables (x:xs) = (x:xs)
+
+--figures :: String -> String
+--figures [] = []
+--figures (x:xs) = (x:xs)
+
+--------
+--MAIN--
+--------
+
+--main = do arguments <- getArgs
+  --        contenuFichier <- readFile (head arguments)
+    --      putStr (miniTex contenuFichier)
