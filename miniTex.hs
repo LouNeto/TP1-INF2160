@@ -14,16 +14,21 @@ miniTex (x:xs) = sections (x:xs)
 
 sections :: String -> String
 sections [] = []
-sections (x:xs) | x == '\\' = sections xs
-                | otherwise = (x:xs)
+sections [x] = [x]
+sections (x:y:xs) | x == '\\' && y == 's' = sections ('S':xs)
+                  | otherwise = x : y : sections xs
 
 tables :: String -> String
 tables [] = []
-tables (x:xs) = (x:xs)
+tables [x] = [x]
+tables (x:y:xs) | x == '\\' && y == 't' = tables (y:xs)
+                | otherwise = x : y : tables xs
 
 figures :: String -> String
 figures [] = []
-figures (x:xs) = (x:xs)
+figures [x] = [x]
+figures (x:y:xs) | x == '\\' && y == 't' = figures (y:xs)
+                | otherwise = x : y : figures xs
 
 --------
 --MAIN--
