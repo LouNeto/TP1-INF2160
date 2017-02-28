@@ -12,24 +12,23 @@ miniTex :: String -> String
 miniTex [] = []
 miniTex (x:xs) = sections (x:xs)
 
---BOUCLE INFINI +++++++++
 sections :: String -> String
 sections [] = []
 sections (x:xs) | x == '\\' = sections xs
-                | otherwise = sections (x:xs)
+                | otherwise = (x:xs)
 
---tables :: String -> String
---tables [] = []
---tables (x:xs) = (x:xs)
+tables :: String -> String
+tables [] = []
+tables (x:xs) = (x:xs)
 
---figures :: String -> String
---figures [] = []
---figures (x:xs) = (x:xs)
+figures :: String -> String
+figures [] = []
+figures (x:xs) = (x:xs)
 
 --------
 --MAIN--
 --------
 
---main = do arguments <- getArgs
-  --        contenuFichier <- readFile (head arguments)
-    --      putStr (miniTex contenuFichier)
+main = do arguments <- getArgs
+          contenuFichier <- readFile (head arguments)
+          putStr (miniTex contenuFichier)
