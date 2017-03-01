@@ -1,3 +1,5 @@
+
+
 --TP1 dans le cadre du cours INF2160
 --Lou-Gomes Neto et Pier-Olivier Decoste
 --NETL14039105, DECP09059005
@@ -14,8 +16,22 @@ miniTex ss = tables $ figures $ sections ss
 sections :: String -> String
 sections [] = []
 sections [x] = [x]
-sections (x:y:xs) | x == '\\' && y == 's' = sections ('S':xs)
+sections (x:y:xs) | x == '\\' && y == 's' = separerAcc ('S':xs)
                 | otherwise = x : y : sections xs
+
+separerAcc :: String -> [String]
+separerAcc [] = []
+separerAcc (x:xs) = modifier $ splitOneOf "{}" (x:xs)
+
+modifier :: [String] -> String
+modifier [] = []
+modifier [x] = "\n"
+modifier (x:xs)   | x == "Section" = indexerSection x ++ modifier xs
+                  | otherwise = x ++ modifier xs
+
+indexerSection :: String -> String
+indexerSection (x:xs) = xs ++ "1 : "
+------------------------------------------------------
 
 tables :: String -> String
 tables [] = []
@@ -28,7 +44,14 @@ figures [] = []
 figures [x] = [x]
 figures (x:y:xs) | x == '\\' && y == 't' = figures (y:xs)
                 | otherwise = x : y : figures xs
-                
+
+separerChaine :: String -> String
+separerChaine [] = []
+separerChaine [x] = [x]
+separerCahine (x:y:xs) | x == '\\' && y == 's' = figures ('S':xs)
+                       | otherwise = x : y : separerChaine xs
+
+
 
 --------
 --MAIN--
