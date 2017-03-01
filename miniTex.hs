@@ -13,6 +13,7 @@ import System.Environment(getArgs)
 miniTex :: String -> String
 miniTex ss = tables $ figures $ sections ss
 
+{-
 sections :: String -> String
 sections [] = []
 sections [x] = [x]
@@ -31,7 +32,14 @@ modifier (x:xs)   | x == "Section" = indexerSection x ++ modifier xs
 
 indexerSection :: String -> String
 indexerSection (x:xs) = xs ++ "1 : "
+-}
 ------------------------------------------------------
+
+sections :: String -> String
+sections [] = []
+sections [x] = [x]
+sections (x:y:xs) | x == '\\' && y == 's' = sections ('S':xs)
+                | otherwise = x : y : sections xs
 
 tables :: String -> String
 tables [] = []
@@ -45,12 +53,13 @@ figures [x] = [x]
 figures (x:y:xs) | x == '\\' && y == 't' = figures (y:xs)
                 | otherwise = x : y : figures xs
 
+{-
 separerChaine :: String -> String
 separerChaine [] = []
 separerChaine [x] = [x]
 separerCahine (x:y:xs) | x == '\\' && y == 's' = figures ('S':xs)
                        | otherwise = x : y : separerChaine xs
-
+-}
 
 
 --------
