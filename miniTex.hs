@@ -6,61 +6,25 @@
 
 import System.Environment(getArgs)
 
--- fonction que vous devez completer.
--- pour l'instant elle retourne la chaine recu en argument,
--- vous devez changer la valeur de retour pour le resultat
--- de votre programme.
 miniTex :: String -> String
-miniTex ss = tables $ figures $ sections ss
+miniTex [] = []
+miniTex ss = sections ss 1
 
-{-
-sections :: String -> String
-sections [] = []
-sections [x] = [x]
-sections (x:y:xs) | x == '\\' && y == 's' = separerAcc ('S':xs)
-                | otherwise = x : y : sections xs
+sections :: String -> Int -> String
+sections [] _ = []
+sections [x] _ = [x]
+sections (x:y:xs) n
+  | x == '\\' && y == 's' = "Section " ++ show n ++ " : " ++ sections (dropWhile (/= '{') xs) (n+1)
+  | x == '{' && isUpper y = title ++ sections (drop (length(title)) (y:xs)) n
+  | x == '}' = sections (dropWhile (/= '\n') (x:y:xs)) n
+  | otherwise = x : sections (y:xs) n
+  where title = takeWhile (/= '}') (y:xs)
 
-separerAcc :: String -> [String]
-separerAcc [] = []
-separerAcc (x:xs) = modifier $ splitOneOf "{}" (x:xs)
 
-modifier :: [String] -> String
-modifier [] = []
-modifier [x] = "\n"
-modifier (x:xs)   | x == "Section" = indexerSection x ++ modifier xs
-                  | otherwise = x ++ modifier xs
 
-indexerSection :: String -> String
-indexerSection (x:xs) = xs ++ "1 : "
--}
-------------------------------------------------------
-
-sections :: String -> String
-sections [] = []
-sections [x] = [x]
-sections (x:y:xs) | x == '\\' && y == 's' = sections ('S':xs)
-                | otherwise = x : y : sections xs
-
-tables :: String -> String
-tables [] = []
-tables [x] = [x]
-tables (x:y:xs) | x == '\\' && y == 't' = tables (y:xs)
-                | otherwise = x : y : tables xs
-
-figures :: String -> String
-figures [] = []
-figures [x] = [x]
-figures (x:y:xs) | x == '\\' && y == 't' = figures (y:xs)
-                | otherwise = x : y : figures xs
-
-{-
-separerChaine :: String -> String
-separerChaine [] = []
-separerChaine [x] = [x]
-separerCahine (x:y:xs) | x == '\\' && y == 's' = figures ('S':xs)
-                       | otherwise = x : y : separerChaine xs
--}
-
+isUpper :: Char -> Bool
+isUpper c | c >= 'A' && c <= 'Z' = True
+          | otherwise = False
 
 --------
 --MAIN--
@@ -69,3 +33,34 @@ separerCahine (x:y:xs) | x == '\\' && y == 's' = figures ('S':xs)
 main = do arguments <- getArgs
           contenuFichier <- readFile (head arguments)
           putStr (miniTex contenuFichier)
+
+          {-
+          sections :: String -> String
+          sections [] = []
+          sections [x] = [x]
+          sections (x:y:xs) | x == '\\' && y == 's' = separerAcc ('S':xs)
+                          | otherwise = x : y : sections xs
+
+          separerAcc :: String -> [String]
+          separerAcc [] = []
+          separerAcc (x:xs) = modifier $ splitOneOf "{}" (x:xs)
+
+          modifier :: [String] -> String
+          modifier [] = []
+          modifier [x] = "\n"
+          modifier (x:xs)   | x == "Section" = indexerSection x ++ modifier xs
+                            | otherwise = x ++ modifier xs
+
+          indexerSection :: String -> String
+          indexerSection (x:xs) = xs ++ "1 : "
+          -}
+
+          {-
+          separerChaine :: String -> String
+          separerChaine [] = []
+          separerChaine [x] = [x]
+          separerCahine (x:y:xs) | x == '\\' && y == 's' = figures ('S':xs)
+                                 | otherwise = x : y : separerChaine xs
+          -}
+
+          ------------------------------------------------------
