@@ -9,13 +9,13 @@ import System.Environment(getArgs)
 -- vous devez changer la valeur de retour pour le resultat
 -- de votre programme.
 miniTex :: String -> String
-miniTex ss = tables $ figures $ sections ss
+miniTex ss = (tables . figures . sections) ss
 
 sections :: String -> String
 sections [] = []
 sections [x] = [x]
 sections (x:y:xs) | x == '\\' && y == 's' = sections ('S':xs)
-                | otherwise = x : y : sections xs
+                  | otherwise = x : y : sections xs
 
 tables :: String -> String
 tables [] = []
@@ -28,7 +28,7 @@ figures [] = []
 figures [x] = [x]
 figures (x:y:xs) | x == '\\' && y == 't' = figures (y:xs)
                 | otherwise = x : y : figures xs
-                
+
 
 --------
 --MAIN--
