@@ -6,7 +6,7 @@ import System.Environment(getArgs)
 
 miniTex :: String -> String
 miniTex [] = []
-miniTex ss = {-titleFormat $-} tables (figures (sections ss 1) 1.1) 1.1
+miniTex ss = titleFormat $ tables (figures (sections ss 1) 1.1) 1.1
 
 sections :: String -> Int -> String
 sections [] _ = []
