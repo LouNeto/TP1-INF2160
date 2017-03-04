@@ -4,31 +4,55 @@
 
 import System.Environment(getArgs)
 
--- fonction que vous devez completer.
--- pour l'instant elle retourne la chaine recu en argument,
--- vous devez changer la valeur de retour pour le resultat
--- de votre programme.
 miniTex :: String -> String
-miniTex ss = (tables . figures . sections) ss
+miniTex [] = []
+miniTex ss = titleFormat $ tables (figures (sections ss 1) 1.1) 1.1
 
-sections :: String -> String
-sections [] = []
-sections [x] = [x]
-sections (x:y:xs) | x == '\\' && y == 's' = sections ('S':xs)
-                  | otherwise = x : y : sections xs
+sections :: String -> Int -> String
+sections [] _ = []
+sections [x] _ = [x]
+sections (x:y:xs) n
+  | x == '\\' && y == 's' = "Section " ++ show n
+      ++ " : " ++ sections (dropWhile (/= '{') xs) (n+1)
+  | otherwise = x : sections (y:xs) n
 
-tables :: String -> String
-tables [] = []
-tables [x] = [x]
-tables (x:y:xs) | x == '\\' && y == 't' = tables (y:xs)
-                | otherwise = x : y : tables xs
+figures :: String -> Float -> String
+figures [] _ = []
+figures [x] _ = [x]
+figures (x:y:xs) n
+  | isNum x && ((read [x]::Int) > (floor n)) = figures (x:y:xs) (n+1)
+  | x == '\\' && y == 'f' = "Figures " ++ show n ++ " : "
+      ++ figures (dropWhile (/= '{') xs) (n + 0.1)
+  | otherwise = x : figures (y:xs) n
+  where isNum x = elem x "0123456789"
 
-figures :: String -> String
-figures [] = []
-figures [x] = [x]
-figures (x:y:xs) | x == '\\' && y == 't' = figures (y:xs)
-                | otherwise = x : y : figures xs
+tables :: String -> Float -> String
+tables [] _ = []
+tables [x] _ = [x]
+tables (x:y:xs) n
+  | isNum x && ((read [x]::Int) > (floor n)) = tables (x:y:xs) (n+1)
+  | x == '\\' && y == 't' = "Tables " ++ show n ++ " : "
+      ++ tables (dropWhile (/= '{') xs) (n + 0.1)
+  | otherwise = x : tables (y:xs) n
+  where isNum x = elem x "0123456789"
 
+-------------------------------------------------------------------------------
+
+--newSection :: (Fractional a, RealFrac a1, Integral a) => a1 -> a
+--newSection x = floor (x + 1) + 0.1
+
+titleFormat :: String -> String
+titleFormat [] = []
+titleFormat [x] = [x]
+titleFormat (x:y:xs)
+  | x == '{' && isUpper' y = title ++ titleFormat (drop (length(title)) (y:xs))
+  | x == '}' = titleFormat (dropWhile (/= '\n') (x:y:xs))
+  | otherwise = x : titleFormat (y:xs)
+  where title = takeWhile (/= '}') (y:xs)
+
+isUpper' :: Char -> Bool
+isUpper' c | c >= 'A' && c <= 'Z' = True
+           | otherwise = False
 
 --------
 --MAIN--
