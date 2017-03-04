@@ -20,19 +20,26 @@ figures :: String -> Float -> String
 figures [] _ = []
 figures [x] _ = [x]
 figures (x:y:xs) n
+  | isNum x && ((read [x]::Int) > (floor n)) = figures (x:y:xs) (n+1)
   | x == '\\' && y == 'f' = "Figures " ++ show n ++ " : "
       ++ figures (dropWhile (/= '{') xs) (n + 0.1)
   | otherwise = x : figures (y:xs) n
+  where isNum x = elem x "0123456789"
 
 tables :: String -> Float -> String
 tables [] _ = []
 tables [x] _ = [x]
 tables (x:y:xs) n
+  | isNum x && ((read [x]::Int) > (floor n)) = tables (x:y:xs) (n+1)
   | x == '\\' && y == 't' = "Tables " ++ show n ++ " : "
       ++ tables (dropWhile (/= '{') xs) (n + 0.1)
   | otherwise = x : tables (y:xs) n
+  where isNum x = elem x "0123456789"
 
 -------------------------------------------------------------------------------
+
+--newSection :: (Fractional a, RealFrac a1, Integral a) => a1 -> a
+--newSection x = floor (x + 1) + 0.1
 
 titleFormat :: String -> String
 titleFormat [] = []
@@ -54,34 +61,3 @@ isUpper' c | c >= 'A' && c <= 'Z' = True
 main = do arguments <- getArgs
           contenuFichier <- readFile (head arguments)
           putStr (miniTex contenuFichier)
-
-          {-
-          sections :: String -> String
-          sections [] = []
-          sections [x] = [x]
-          sections (x:y:xs) | x == '\\' && y == 's' = separerAcc ('S':xs)
-                          | otherwise = x : y : sections xs
-
-          separerAcc :: String -> [String]
-          separerAcc [] = []
-          separerAcc (x:xs) = modifier $ splitOneOf "{}" (x:xs)
-
-          modifier :: [String] -> String
-          modifier [] = []
-          modifier [x] = "\n"
-          modifier (x:xs)   | x == "Section" = indexerSection x ++ modifier xs
-                            | otherwise = x ++ modifier xs
-
-          indexerSection :: String -> String
-          indexerSection (x:xs) = xs ++ "1 : "
-          -}
-
-          {-
-          separerChaine :: String -> String
-          separerChaine [] = []
-          separerChaine [x] = [x]
-          separerCahine (x:y:xs) | x == '\\' && y == 's' = figures ('S':xs)
-                                 | otherwise = x : y : separerChaine xs
-          -}
-
-          ------------------------------------------------------
