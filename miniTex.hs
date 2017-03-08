@@ -8,6 +8,12 @@ miniTex :: String -> String
 miniTex [] = []
 miniTex ss = titleFormat $ tables (figures (sections ss 1) 1.1) 1.1
 
+references :: String -> [(String, String)]
+references [] = []
+references (x:xs) | x == '\\' = (takeWhile (/= '{') xs , takeWhile (/= '}')
+                      (drop 2 (dropWhile (/= '}') xs))) : references xs
+                  | otherwise = references xs
+
 sections :: String -> Int -> String
 sections [] _ = []
 sections [x] _ = [x]
@@ -60,4 +66,5 @@ isUpper' c | c >= 'A' && c <= 'Z' = True
 
 main = do arguments <- getArgs
           contenuFichier <- readFile (head arguments)
+          print (references contenuFichier)
           putStr (miniTex contenuFichier)
