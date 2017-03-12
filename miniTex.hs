@@ -14,6 +14,9 @@ miniTex [] = []
 miniTex ss = titleFormat (makeRef (funcFormat) (refList funcFormat))
               where funcFormat = tables (figures (sections ss 1) 11) 11
 
+-- Prend en parametre un string et le numero de la section et retourne un string ou
+-- tous les fonctions de sections sont formatees. Le numero de la section est
+-- incremente a chaque section.
 sections :: String -> Int -> String
 sections [] _ = []
 sections [x] _ = [x]
@@ -21,6 +24,9 @@ sections (x:y:xs) n | x == '\\' && y == 's' = [x] ++ "Section " ++ show n
                       ++ " : " ++ sections (dropWhile (/= '{') xs) (n+1)
                     | otherwise = x : sections (y:xs) n
 
+-- Prend en parametre un string et le numero de la figure et retourne un string ou
+-- tous les fonctions de figures sont formatees. Le numero de la figure est
+-- incremente a chaque figure et a chaque section.
 figures :: String -> Int -> String
 figures [] _ = []
 figures [x] _ = [x]
@@ -31,6 +37,9 @@ figures (x:y:xs) n
   | otherwise = x : figures (y:xs) n
   where isNum x = elem x "0123456789"
 
+-- Prend en parametre un string et le numero de la table et retourne un string ou
+-- tous les fonctions de tables sont formatees. Le numero de la table est
+-- incremente a chaque tables et a chaque section.
 tables :: String -> Int -> String
 tables [] _ = []
 tables [x] _ = [x]
@@ -41,6 +50,8 @@ tables (x:y:xs) n
   | otherwise = x : tables (y:xs) n
   where isNum x = elem x "0123456789"
 
+-- Prend un string et la liste des references en parametre et retourne un string
+-- dont les fonctions de references ont etes remplace par la reference approprie.
 makeRef :: String -> [(String, String)] -> String
 makeRef [] _ = []
 makeRef [x] _ = [x]
@@ -50,6 +61,8 @@ makeRef (x:y:xs) zs
       ++ ")" ++ makeRef (drop 1 (dropWhile (/= '}') xs)) zs
   | otherwise = x : makeRef (y:xs) zs
 
+-- Prend un string en parametre et retourne une liste de couples constitues des titres
+-- et des identificateurs relies aux differents sections, tables et figures.
 refList :: String -> [(String, String)]
 refList [] = []
 refList [x] = []
@@ -66,8 +79,9 @@ getRef _ [] = []
 getRef s (x:xs) | s == snd x = fst x
                 | otherwise = getRef s xs
 
---Prend un string en parametre et retourne celui-ci sans accolades autour.
---La focntion retire aussi les identificateurs entre accolades
+-- Prend un string en parametre et retourne celui-ci sans accolades autour des titres.
+-- La fonction retire aussi les identificateurs et leurs accolades ainsi que les
+-- identificateurs de fonctions '\'.
 titleFormat :: String -> String
 titleFormat [] = []
 titleFormat [x] = [x]
@@ -78,19 +92,19 @@ titleFormat (x:y:xs)
   | otherwise = x : titleFormat (y:xs)
   where title = takeWhile (/= '}') (y:xs)
 
---La fonction retourne true si le charactere en parametre est une majuscle.
+-- La fonction retourne true si le charactere en parametre est une majuscle.
 isUpper' :: Char -> Bool
 isUpper' c | c >= 'A' && c <= 'Z' = True
            | otherwise = False
 
---La fonction prend un chiffre correspondant a une table ou une figure et
---l'incremente d'une dizaine additionnelle pour suivre le numero de la section
---en cours.
+-- La fonction prend un chiffre correspondant a une table ou une figure et
+-- l'incremente d'une dizaine additionnelle pour suivre le numero de la section
+-- en cours.
 nextSection :: Int -> Int
 nextSection n = ((div (n+10) 10) * 10) + 1
 
---Cette fonction construit un string qui represente la valeur int en parametre sous
---forme d'un chiffre a decimale. ex: 31 = "3.1"
+-- Cette fonction construit un string qui represente la valeur int en parametre sous
+-- forme d'un chiffre a decimale. ex: 31 = "3.1"
 showDecimal :: Int -> String
 showDecimal n = show (div n 10) ++ "." ++ show (mod n 10)
 
